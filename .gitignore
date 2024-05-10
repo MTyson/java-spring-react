@@ -1,0 +1,35 @@
+# Build output directories
+target/
+build/
+
+# Dependency directories
+node_modules/
+.mvn/
+
+# IDE/editor specific files
+.idea/
+.vscode/
+
+# NPM package lock files
+package-lock.json
+
+# Spring Boot config
+application.properties
+
+# Test coverage reports
+coverage/
+
+# Local development env files
+.env.local
+.env.development
+
+# Temporary files
+*.log
+*.tmp
+*.pid
+
+# JS minification files
+*.min.js
+
+# Typescript declaration files
+*.d.ts
