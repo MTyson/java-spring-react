@@ -3,11 +3,12 @@ import './App.css';
 import React, { useState, useEffect } from 'react';
 
 function App() {
+  const ip = "34.132.155.86";
   const [todos, setTodos] = useState([]);
 
   // Fetch todos on component mount
   useEffect(() => {
-    fetch('http://34.134.206.232:8080/todos')
+    fetch('http://'+ip+':8080/todos')
       .then(response => response.json())
       .then(data => setTodos(data))
       .catch(error => console.error(error));
@@ -15,7 +16,7 @@ function App() {
 
   // Function to add a new TODO item
   const addTodo = (description) => {
-    fetch('http://34.134.206.232:8080/todos', {
+    fetch('http://'+ip+':8080/todos', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ description }),
@@ -36,7 +37,7 @@ function App() {
     setTodos(updatedTodos);
 
     // Update completion on the server (assuming an endpoint exists)
-    fetch(`http://34.134.206.232:8080/todos/${id}`, {
+    fetch(`http://`+ip+`:8080/todos/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ completed: !todos.find(todo => todo.id === id).completed }),
@@ -46,7 +47,7 @@ function App() {
   const deleteTodo = (id) => {
     const filteredTodos = todos.filter(todo => todo.id !== id);
     setTodos(filteredTodos);
-    fetch(`http://34.134.206.232:8080/todos/${id}`, {
+    fetch(`http://`+ip+`:8080/todos/${id}`, {
       method: 'DELETE'
     })
     .catch(error => console.error(error));

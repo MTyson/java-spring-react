@@ -1,4 +1,4 @@
-package com.example.iwjavaspringhtmx.model;
+package com.example.iwreactspring.model;
 
 public class TodoItem {
   private boolean completed;

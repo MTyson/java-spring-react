@@ -14,12 +14,17 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import com.example.iwjavaspringhtmx.model.TodoItem;
+import com.example.iwreactspring.model.TodoItem;
+import com.example.iwreactspring.service.TodoService;
 
 @RestController
-@CrossOrigin(origins = "http://34.134.206.232:3000") // Allow CORS requests from React on port 3000 (change if needed)
+@CrossOrigin(origins = "http://34.132.155.86:3000") // Allow CORS requests from React on port 3000 (change if needed)
 public class MyController {
+
+  @Autowired
+  private TodoService todoService;
 
   private static List<TodoItem> items = new ArrayList<>();
 
@@ -31,53 +36,35 @@ public class MyController {
 
   @GetMapping("/todos")
   public ResponseEntity<List<TodoItem>> getTodos() {
-    return new ResponseEntity<>(items, HttpStatus.OK);
+    System.out.println("get todos: " + todoService.getTodos().size());
+    return new ResponseEntity<>(todoService.getTodos(), HttpStatus.OK);
   }
 
-  @GetMapping("/todos/{id}")
-  public ResponseEntity<TodoItem> getTodo(@PathVariable Long id) {
-    TodoItem todo = items.stream()
-        .filter(item -> item.getId().equals(id))
-        .findFirst()
-        .orElse(null);
-    if (todo != null) {
-      return new ResponseEntity<>(todo, HttpStatus.OK);
-    } else {
-      return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
-  }
-
-  // Create a new TODO item
   @PostMapping("/todos")
   public ResponseEntity<TodoItem> createTodo(@RequestBody TodoItem newTodo) {
-    // Generate a unique ID (simple approach for this example)
-    Integer nextId = items.stream().mapToInt(TodoItem::getId).max().orElse(0) + 1;
-    newTodo.setId(nextId);
-    items.add(newTodo);
-    return new ResponseEntity<>(newTodo, HttpStatus.CREATED);
+    TodoItem todo = todoService.createTodo(newTodo);
+    return new ResponseEntity<>(todo, HttpStatus.CREATED);
   }
 
   // Update (toggle completion) a TODO item
   @PutMapping("/todos/{id}")
   public ResponseEntity<TodoItem> updateTodoCompleted(@PathVariable Integer id) {
     System.out.println("BEGIN update: " + id);
-    Optional<TodoItem> optionalTodo = items.stream().filter(item -> item.getId().equals(id)).findFirst();
-    if (optionalTodo.isPresent()) {
-      optionalTodo.get().setCompleted(!optionalTodo.get().isCompleted());
-      return new ResponseEntity<>(optionalTodo.get(), HttpStatus.OK);
+
+    TodoItem todo = todoService.getTodo(id);
+    if (todo != null) {
+      todo.setCompleted(!todo.isCompleted());
+      return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     } else {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
   }
-
-  // Delete a TODO item
   @DeleteMapping("/todos/{id}")
   public ResponseEntity<Void> deleteTodo(@PathVariable Integer id) {
     System.out.println("BEGIN delete: " + id);
-    Optional<TodoItem> optionalTodo = items.stream().filter(item -> item.getId().equals(id)).findFirst();
-    System.out.println(optionalTodo);
-    if (optionalTodo.isPresent()) {
-      items.removeIf(item -> item.getId().equals(optionalTodo.get().getId()));
+    boolean deleted = todoService.deleteTodo(id);
+    System.out.println("deleted: " +deleted);
+    if (deleted) {
       return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     } else {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
