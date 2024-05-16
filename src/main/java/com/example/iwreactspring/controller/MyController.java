@@ -26,14 +26,6 @@ public class MyController {
   @Autowired
   private TodoService todoService;
 
-  private static List<TodoItem> items = new ArrayList<>();
-
-  static {
-    items.add(new TodoItem(0, "Watch the sunrise"));
-    items.add(new TodoItem(1, "Read Swami Venkatesananda's Supreme Yoga"));
-    items.add(new TodoItem(2, "Watch the mind"));
-  }
-
   @GetMapping("/todos")
   public ResponseEntity<List<TodoItem>> getTodos() {
     System.out.println("get todos: " + todoService.getTodos().size());
@@ -48,19 +40,20 @@ public class MyController {
 
   // Update (toggle completion) a TODO item
   @PutMapping("/todos/{id}")
-  public ResponseEntity<TodoItem> updateTodoCompleted(@PathVariable Integer id) {
+  public ResponseEntity<TodoItem> updateTodoCompleted(@PathVariable String id) {
     System.out.println("BEGIN update: " + id);
 
     TodoItem todo = todoService.getTodo(id);
     if (todo != null) {
       todo.setCompleted(!todo.isCompleted());
+      todoService.saveTodo(todo);
       return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     } else {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
   }
   @DeleteMapping("/todos/{id}")
-  public ResponseEntity<Void> deleteTodo(@PathVariable Integer id) {
+  public ResponseEntity<Void> deleteTodo(@PathVariable String id) {
     System.out.println("BEGIN delete: " + id);
     boolean deleted = todoService.deleteTodo(id);
     System.out.println("deleted: " +deleted);
@@ -70,5 +63,6 @@ public class MyController {
       return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
   }
+ 
 }
 

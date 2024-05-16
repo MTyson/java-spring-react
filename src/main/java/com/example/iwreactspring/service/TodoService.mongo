@@ -1,0 +1,60 @@
+package com.example.iwreactspring.service;
+
+import java.util.List;
+import java.util.ArrayList;
+import com.example.iwreactspring.model.TodoItem;
+import org.springframework.stereotype.Service;
+
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.result.DeleteResult;
+import org.bson.Document;
+import org.bson.codecs.configuration.CodecRegistry;
+import org.bson.codecs.pojo.PojoCodecProvider;
+
+@Service
+public class TodoService {
+    private final MongoCollection<TodoItem> todosCollection;
+
+    public TodoService() {
+        String connectionString = "mongodb://localhost:27017";
+        String databaseName = "tod";
+        String collectionName = "todo";
+
+        CodecRegistry pojoCodecRegistry = PojoCodecProvider.builder().automatic(true).build().registry();
+        MongoClient mongoClient = new MongoClient(connectionString, pojoCodecRegistry);
+        MongoDatabase database = mongoClient.getDatabase(databaseName);
+        todosCollection = database.getCollection(collectionName, TodoItem.class);
+    }
+    public List<TodoItem> getTodos() {
+        return todosCollection.find().into(new ArrayList<>()); // Convert to desired format
+    }
+    public TodoItem getTodo(Integer id) {
+        Document filter = new Document("_id", id);
+        return todosCollection.find(filter).first();
+    }
+    public TodoItem createTodo(TodoItem newTodo) {
+        todosCollection.insertOne(newTodo);
+        return newTodo;
+    }
+    public boolean updateTodo(TodoItem todoItem) {
+        Document filter = new Document("_id", todoItem.getId());
+        todosCollection.replaceOne(filter, todoItem); // Replace entire document
+        return true;
+    }
+    public boolean deleteTodo(Integer id) {
+        Document filter = new Document("_id", id);
+        DeleteResult result = todosCollection.deleteOne(filter);
+        return result.getDeletedCount() == 1;
+    }
+    private List<TodoItem> convertToList(Iterable<Document> documents) {
+      return documents.stream()
+        .map(document -> document.toPojo(TodoItem.class))
+        .collect(Collectors.toList());
+    }
+}
+
