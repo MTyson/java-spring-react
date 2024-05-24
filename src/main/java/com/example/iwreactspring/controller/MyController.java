@@ -20,7 +20,8 @@ import com.example.iwreactspring.model.TodoItem;
 import com.example.iwreactspring.service.TodoService;
 
 @RestController
-@CrossOrigin(origins = "http://34.132.155.86:3000") // Allow CORS requests from React on port 3000 (change if needed)
+//@CrossOrigin(origins = "http://34.132.155.86:3000") // Allow CORS requests from React on port 3000 (change if needed)
+@CrossOrigin(origins = "https://iw-react-java-part3-frontend.vercel.app,https://iw-react-java-part3-frontend-vizl.vercel.app,http://35.232.114.55:3000")
 public class MyController {
 
   @Autowired

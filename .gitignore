@@ -14,7 +14,7 @@ node_modules/
 package-lock.json
 
 # Spring Boot config
-application.properties
+#application.properties
 
 # Test coverage reports
 coverage/

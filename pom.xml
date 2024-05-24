@@ -44,23 +44,20 @@
       <version>4.2.5</version>
 	</dependency>
   </dependencies>
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
-			<plugin>
+  <build>
+	  <plugins>
+   <plugin>
+        <groupId>org.springframework.boot</groupId>
+	<artifactId>spring-boot-maven-plugin</artifactId>
+      </plugin>
+    <plugin>
     <groupId>com.github.eirslett</groupId>
-    <artifactId>frontend-maven-plugin</artifactId>
-    <version>${frontend-maven-plugin.version}</version>
-
-    <configuration>
-        <installDirectory>${project.build.directory}</installDirectory>
-    </configuration>
-
-    </plugin>
-		</plugins>
-	</build>
-
+     <artifactId>frontend-maven-plugin</artifactId>
+      <version>${frontend-maven-plugin.version}</version>
+        <configuration>
+          <installDirectory>${project.build.directory}</installDirectory>
+        </configuration>
+</plugin>
+    </plugins>
+  </build>
 </project>

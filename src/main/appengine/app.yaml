@@ -1,0 +1,11 @@
+runtime: java11
+env: standard
+runtime_config:
+  jdk: openjdk11
+env_variables:
+  SPRING_PROFILES_ACTIVE: "production"
+handlers:
+- url: /.*
+  script: this field is required, but ignored
+manual_scaling:
+  instances: 1
